@@ -55,7 +55,7 @@ function App() {
             value={variant}
             onChange={(ev) => setVariant(ev.target.value)}
           >
-            {[collection.keys()].map((k, i) => (
+            {[...collection.keys()].map((k, i) => (
               <option key={i} value={k}>
                 {k}
               </option>
