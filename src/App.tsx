@@ -20,7 +20,9 @@ function App() {
 
   const collection = Solutions.solvers[solver].collection;
 
-  const runner = collection.get(variant);
+  const runner = function (text: string) {
+    return collection.get(variant)(text.trim());
+  };
   if (runner === undefined) {
     throw new Error("undefined variant");
   }

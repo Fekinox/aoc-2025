@@ -148,7 +148,7 @@ export class Grid<T> {
 
     for (let yy = yLo; yy <= yHi; yy++) {
       for (let xx = xLo; xx <= xHi; xx++) {
-        if (!inclusive && xx == x && yy == y) {
+        if (!(!inclusive && xx == x && yy == y)) {
           res.push({
             x: xx,
             y: yy,
@@ -159,5 +159,13 @@ export class Grid<T> {
     }
 
     return res;
+  }
+
+  iter(f: (x: number, y: number, v: T) => void) {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        f(x, y, this.mustGet(x, y));
+      }
+    }
   }
 }
