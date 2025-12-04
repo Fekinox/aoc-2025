@@ -7,8 +7,8 @@ import type { SolverOutput } from "./solutions/types";
 
 const solverWorker = new Worker(
   new URL("./solutions/SolutionWorker.ts", import.meta.url),
+  { type: "module" },
 );
-console.log(solverWorker);
 
 type ProblemState = {
   fileName: string;
@@ -22,19 +22,27 @@ function App() {
   const [solver, setSolver] = useState(0);
   const [variant, setVariant] = useState("main");
 
+  const [workerActive, setWorkerActive] = useState<boolean>(false);
+
   const collection = Solutions.solvers[solver].collection;
 
   const runSolver = (data: string): Promise<SolverOutput> => {
+    setWorkerActive(true);
     return new Promise((res, rej) => {
       solverWorker.onmessage = (e: MessageEvent<SolverOutput>) => {
-        res(e.data);
+        setTimeout(() => {
+          setWorkerActive(false);
+          res(e.data);
+        }, 1000);
       };
-      // solverWorker.onerror = (e) => {
-      //   rej(e);
-      // };
-      // solverWorker.onmessageerror = (e) => {
-      //   rej(e);
-      // };
+      solverWorker.onerror = (e) => {
+        setWorkerActive(false);
+        rej(e);
+      };
+      solverWorker.onmessageerror = (e) => {
+        setWorkerActive(false);
+        rej(e);
+      };
       solverWorker.postMessage({
         day: solver,
         variant: variant,
@@ -199,6 +207,11 @@ function App() {
             ))}
           </select>
           <button onClick={() => recompute()}>Recompute</button>
+          {workerActive ? (
+            <button onClick={() => solverWorker.terminate()}>Terminate</button>
+          ) : (
+            <></>
+          )}
         </div>
         <table>
           <thead>
