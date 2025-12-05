@@ -30,10 +30,8 @@ function App() {
     setWorkerActive(true);
     return new Promise((res, rej) => {
       solverWorker.onmessage = (e: MessageEvent<SolverOutput>) => {
-        setTimeout(() => {
-          setWorkerActive(false);
-          res(e.data);
-        }, 1000);
+        setWorkerActive(false);
+        res(e.data);
       };
       solverWorker.onerror = (e) => {
         setWorkerActive(false);
