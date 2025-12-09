@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import "./App.css";
 
 import Solutions from "./solutions/Solutions";
@@ -19,12 +19,17 @@ type ProblemState = {
 function App() {
   const [inputs, setInputs] = useState<ProblemState[]>([]);
 
-  const [solver, setSolver] = useState(0);
+  const [solver, setSolver] = useState(8);
   const [variant, setVariant] = useState("main");
 
   const [workerActive, setWorkerActive] = useState<boolean>(false);
 
   const collection = Solutions.solvers[solver].collection;
+
+  useEffect(() => {
+    // get day of month and set problem to current day if between
+    // dec 1 2025 and dec 12 2025
+  }, []);
 
   const runSolver = (data: string): Promise<SolverOutput> => {
     setWorkerActive(true);
@@ -146,14 +151,15 @@ function App() {
       ev.preventDefault();
 
       try {
-        const results = await runSolver(ev.currentTarget.value);
+        const t = ev.target.value as string;
+        const results = await runSolver(t);
 
         const newItem = {
           fileName: "text",
-          contents: ev.currentTarget.value,
+          contents: t,
           subState: results,
         };
-        ev.currentTarget.value = "";
+        ev.target.value = "";
 
         setInputs([...inputs, newItem]);
       } catch (error) {
