@@ -19,7 +19,7 @@ type ProblemState = {
 function App() {
   const [inputs, setInputs] = useState<ProblemState[]>([]);
 
-  const [solver, setSolver] = useState(8);
+  const [solver, setSolver] = useState(11);
   const [variant, setVariant] = useState("main");
 
   const [workerActive, setWorkerActive] = useState<boolean>(false);
